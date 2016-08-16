@@ -5,7 +5,9 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.io.*;
 import java.util.Properties;
 
+import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.*;
+import static org.quartz.JobKey.jobKey;
 import static org.quartz.TriggerBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
 import static org.quartz.TriggerKey.triggerKey;
@@ -55,8 +57,18 @@ public class QuartzTest {
                             .repeatForever())
                     .build();
 
+
+            CronTrigger trigger2 = newTrigger()
+                    .withIdentity("trigger1","group1")
+                    .withSchedule(cronSchedule("0/2 * * * * ?")).build();
+
             // Tell quartz to schedule the job using our trigger
-            scheduler.scheduleJob(job, trigger);
+            scheduler.scheduleJob(job, trigger2);
+            int i = 0;
+            while (i++%5==0){
+                scheduler.deleteJob(jobKey("trigger1","group1"));
+            }
+
 
             // and start it off
             scheduler.start();

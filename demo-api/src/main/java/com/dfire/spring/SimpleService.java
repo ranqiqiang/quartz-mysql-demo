@@ -1,6 +1,4 @@
-package com.dfire.test;
-
-import java.io.Serializable;
+package com.dfire.spring;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;

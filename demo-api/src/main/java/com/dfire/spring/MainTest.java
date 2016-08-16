@@ -1,4 +1,4 @@
-package com.dfire.test;
+package com.dfire.spring;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

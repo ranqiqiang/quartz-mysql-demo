@@ -21,7 +21,7 @@
 
     <bean id="jobDetail1" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
         <property name="jobClass">
-            <value>com.dfire.test.MyQuartzJobBean1</value>
+            <value>com.dfire.spring.MyQuartzJobBean1</value>
         </property>
         <property name="durability" value="true" />
         <property name="requestsRecovery" value="true" />

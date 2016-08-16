@@ -4,25 +4,26 @@ import com.dfire.job.TestJob;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.JobKey.jobKey;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.TriggerKey.triggerKey;
 
 /**
- * Created by qqr on 16/8/15.
+ * Created by qqr on 16/8/16.
  */
-public class Update {
-    static  Properties props = new Properties();
+public class Stop {
+    static Properties props = new Properties();
 
     static {
         try {
-            InputStream in = Update.class.getResourceAsStream("/quartz_local.properties");
+            InputStream in = Stop.class.getResourceAsStream("/quartz_local.properties");
             props.load(in);
             in.close();
         } catch (FileNotFoundException e) {
@@ -51,33 +52,34 @@ public class Update {
             String triggerGroupName = "group1";
             CronTrigger trigger2 = newTrigger()
                     .withIdentity(triggerName, triggerGroupName)
-                    .withSchedule(cronSchedule("0/5 * * * * ?")).build();
+                    .withSchedule(cronSchedule("0/3 * * * * ?")).build();
 
             scheduler.scheduleJob(job, trigger2);
             scheduler.start();
 
-            /*----------------------------------------------------*/
-            Thread.sleep(1000 * 10);
-            System.out.println("更新任务");
             TriggerKey triggerKey = TriggerKey.triggerKey(triggerName, triggerGroupName);
-            // 触发器
-            TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
-            // 触发器名,触发器组
-            triggerBuilder.withIdentity(triggerName, triggerGroupName);
-            triggerBuilder.startNow();
-            // 触发器时间设定
-            triggerBuilder.withSchedule(CronScheduleBuilder.cronSchedule("0/1 * * * * ?"));
-            // 创建Trigger对象
-            trigger2 = (CronTrigger) triggerBuilder.build();
-            // 方式一 ：修改一个任务的触发时间
-            scheduler.rescheduleJob(triggerKey, trigger2);
+            JobKey jobKey = trigger2.getJobKey();
 
+            Thread.sleep(1000 * 10);
+            System.out.println("停止");
+            scheduler.pauseJob(jobKey);
+
+            Thread.sleep(1000 * 10);
+            System.out.println("从新开启");
+            scheduler.resumeJob(jobKey);
+
+            Thread.sleep(1000 * 10);
+            System.out.println("移除触发器");
+            scheduler.unscheduleJob(triggerKey);
+
+
+            Thread.sleep(1000 * 10);
+            System.out.println("删除任务");
+            scheduler.deleteJob(jobKey);
 
 
         } catch (SchedulerException se) {
             se.printStackTrace();
         }
     }
-
-
 }

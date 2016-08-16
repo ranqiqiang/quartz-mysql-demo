@@ -1,4 +1,4 @@
-package com.dfire.test;
+package com.dfire.spring;
 
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
